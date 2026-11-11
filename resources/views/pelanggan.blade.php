@@ -50,12 +50,12 @@
                                             <option value="Cuci/Gosok Saja">Cuci/Gosok Saja (Rp 5.000/kg)</option>
                                             <option value="Cuci + Gosok">Cuci + Gosok (Rp 7.000/kg)</option>
                                         </optgroup>
-                                        <optgroup label="Perawatan Bed Cover">
+                                        <optgroup label="Cuci Bed Cover">
                                             <option value="Bed Cover - Single (Kecil)">Bed Cover - Single/Kecil (Rp 15.000/pcs)</option>
                                             <option value="Bed Cover - Queen (Sedang)">Bed Cover - Queen/Sedang (Rp 20.000/pcs)</option>
                                             <option value="Bed Cover - King (Besar)">Bed Cover - King/Besar (Rp 30.000/pcs)</option>
                                         </optgroup>
-                                        <optgroup label="Perawatan Karpet">
+                                        <optgroup label="Cuci Karpet">
                                             <option value="Karpet - Small (Kecil)">Karpet - Small/Kecil (Rp 40.000/pcs)</option>
                                             <option value="Karpet - Medium (Sedang)">Karpet - Medium/Sedang (Rp 60.000/pcs)</option>
                                             <option value="Karpet - Large (Besar)">Karpet - Large/Besar (Rp 75.000/pcs)</option>
@@ -67,8 +67,8 @@
                                     <select name="metode_pembayaran" class="form-select bg-light" required>
                                         <option value="" disabled selected>Pilih cara bayar...</option>
                                         <option value="Cash / Bayar di Toko">Cash / Bayar saat barang diantar kembali</option>
-                                        <option value="Transfer Bank BCA">Transfer Bank BCA (No Rek: 123456789)</option>
-                                        <option value="QRIS (Scan di Toko)">QRIS</option>
+                                        <option value="Transfer Bank">Transfer Bank</option>
+                                        <option value="QRIS">QRIS</option>
                                     </select>
                                 </div>
                             </div>
