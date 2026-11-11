@@ -18,7 +18,6 @@ class TransaksiController extends Controller
 
         $data_transaksi = Transaksi::orderBy('id', 'desc')->get();
         $data_pelanggan = User::where('role', 'pelanggan')->orderBy('id', 'desc')->get();
-        // Tarik semua data rating untuk Admin
         $data_rating = Rating::with('user')->orderBy('id', 'desc')->get();
         
         return response()->view('kasir_admin', compact('data_transaksi', 'data_pelanggan', 'data_rating'))
@@ -108,6 +107,33 @@ class TransaksiController extends Controller
         return view('struk', compact('transaksi'));
     }
 
+    /**
+     * FUNGSI AUTO-SENSOR MULTIBAHASA & ANTI-SPAM JUDOL
+     */
+    private function filterUlasan($teks)
+    {
+        if (empty($teks)) return $teks;
+
+        $kataSensor = [
+            'anjing', 'babi', 'kontol', 'memek', 'asu', 'fuck', 'shit', 'bitch', 'asshole', 'bastard',
+            'slot', 'gacor', 'maxwin', 'depo', 'wd', 'mahjong', 'pragmatic', 'olympus', 
+            'scatter', 'situs resmi', 'link alternatif', 'bonus harian', 'freechip', 
+            'rtp tertinggi', 'jackpot', 'bet 200', 'bet perak', 'casino', 'poker online'
+        ];
+
+        $teksBersih = $teks;
+
+        foreach ($kataSensor as $kata) {
+            $teksBersih = preg_ireplace('/\b' . preg_quote($kata, '/') . '\b/i', '***', $teksBersih);
+            $teksBersih = str_ireplace($kata, '***', $teksBersih);
+        }
+
+        return $teksBersih;
+    }
+
+    /**
+     * SIMPAN ULASAN PELANGGAN DENGAN FILTER OTOMATIS
+     */
     public function storeRating(Request $request)
     {
         $request->validate([
@@ -115,23 +141,30 @@ class TransaksiController extends Controller
             'ulasan' => 'nullable|string|max:500'
         ]);
 
+        // JALANKAN AUTO-SENSOR PADA KOLOM 'ulasan'
+        $ulasanAman = $this->filterUlasan($request->ulasan);
+
         Rating::create([
             'user_id' => Auth::id(),
             'rating' => $request->rating,
-            'ulasan' => $request->ulasan
+            'ulasan' => $ulasanAman // Menyimpan ulasan yang sudah bersih dari kata kasar & judol
         ]);
 
         return redirect('/pelanggan')->with('success', 'Terima kasih! Penilaian Anda berhasil dipublikasikan di Forum Ulasan.');
     }
 
-    
     public function balasRating(Request $request, $id)
     {
         $rating = Rating::findOrFail($id);
+        
+        // Filter juga jika admin mengedit atau membalas secara manual
+        $ulasanAman = $this->filterUlasan($request->ulasan);
+
         $rating->update([
-            'ulasan' => $request->ulasan, // Memungkinkan admin menyensor/edit teks pelanggan
+            'ulasan' => $ulasanAman, 
             'balasan_admin' => $request->balasan_admin
         ]);
+
         return redirect('/kasir')->with('success', 'Ulasan berhasil direspon & dimoderasi!');
     }
 
