@@ -12,7 +12,7 @@
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-bold text-primary"><i class="fa-solid fa-cash-register me-2"></i>Dashboard Admin</h3>
-            <a href="/logout" class="btn btn-danger fw-bold shadow-sm"><i class="fa-solid fa-power-off me-1"></i>Tutup Kasir</a>
+            <a href="/logout" class="btn btn-danger fw-bold shadow-sm"><i class="fa-solid fa-power-off me-1"></i>Logout</a>
         </div>
 
         @if(session('success'))

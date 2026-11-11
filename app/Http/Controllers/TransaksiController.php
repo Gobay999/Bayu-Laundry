@@ -107,9 +107,6 @@ class TransaksiController extends Controller
         return view('struk', compact('transaksi'));
     }
 
-    /**
-     * FUNGSI AUTO-SENSOR MULTIBAHASA & ANTI-SPAM JUDOL
-     */
     private function filterUlasan($teks)
     {
         if (empty($teks)) return $teks;
@@ -124,16 +121,14 @@ class TransaksiController extends Controller
         $teksBersih = $teks;
 
         foreach ($kataSensor as $kata) {
-            $teksBersih = preg_ireplace('/\b' . preg_quote($kata, '/') . '\b/i', '***', $teksBersih);
+            // Menggunakan preg_replace yang benar dengan modifier /i (insensitive)
+            $teksBersih = preg_replace('/\b' . preg_quote($kata, '/') . '\b/i', '***', $teksBersih);
             $teksBersih = str_ireplace($kata, '***', $teksBersih);
         }
 
         return $teksBersih;
     }
 
-    /**
-     * SIMPAN ULASAN PELANGGAN DENGAN FILTER OTOMATIS
-     */
     public function storeRating(Request $request)
     {
         $request->validate([
@@ -141,13 +136,12 @@ class TransaksiController extends Controller
             'ulasan' => 'nullable|string|max:500'
         ]);
 
-        // JALANKAN AUTO-SENSOR PADA KOLOM 'ulasan'
         $ulasanAman = $this->filterUlasan($request->ulasan);
 
         Rating::create([
             'user_id' => Auth::id(),
             'rating' => $request->rating,
-            'ulasan' => $ulasanAman // Menyimpan ulasan yang sudah bersih dari kata kasar & judol
+            'ulasan' => $ulasanAman
         ]);
 
         return redirect('/pelanggan')->with('success', 'Terima kasih! Penilaian Anda berhasil dipublikasikan di Forum Ulasan.');
@@ -156,8 +150,6 @@ class TransaksiController extends Controller
     public function balasRating(Request $request, $id)
     {
         $rating = Rating::findOrFail($id);
-        
-        // Filter juga jika admin mengedit atau membalas secara manual
         $ulasanAman = $this->filterUlasan($request->ulasan);
 
         $rating->update([
